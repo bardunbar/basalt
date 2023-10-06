@@ -70,8 +70,6 @@ impl RenderState {
         // Configures the surface and prepares it for rendering
         surface.configure(&device, &config);
 
-
-
         RenderState {
             surface,
             device,
@@ -82,22 +80,27 @@ impl RenderState {
         }
     }
 
+    #[inline]
     pub fn get_window(&self) -> &Window {
         &self.window
     }
 
+    #[inline]
     pub fn get_surface(&self) -> &wgpu::Surface {
         &self.surface
     }
 
+    #[inline]
     pub fn get_device(&self) -> &wgpu::Device {
         &self.device
     }
 
+    #[inline]
     pub fn get_queue(&self) -> &wgpu::Queue {
         &self.queue
     }
 
+    #[inline]
     pub fn get_size(&self) -> winit::dpi::PhysicalSize<u32> {
         self.size
     }

@@ -27,7 +27,7 @@ impl Renderer {
                     view: &view,
                     resolve_target: None,
                     ops: wgpu::Operations {
-                        load: wgpu::LoadOp::Clear(Color::BLACK),
+                        load: wgpu::LoadOp::Clear(Color { r: 0.4, g: 0.4, b: 0.4, a: 1.0 } ),
                         store: true,
                     }
                 })],
