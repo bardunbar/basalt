@@ -1,18 +1,25 @@
+use log::info;
 use winit::{
     event::{ Event, WindowEvent, KeyboardInput, ElementState, VirtualKeyCode },
     event_loop::{ EventLoop, ControlFlow },
     window::WindowBuilder,
 };
 
+use basalt_render::render_state::RenderState;
 
 async fn run() {
 
+    info!("Basalt Initialization Begin");
     let event_loop = EventLoop::new();
     let window = WindowBuilder::new().build(&event_loop).unwrap();
 
+    let state = RenderState::new(window).await;
+
+    info!("Basalt Loop Begin");
+
     event_loop.run(move |event, _, control_flow|
         match event {
-            Event::WindowEvent { ref event, window_id } if window_id == window.id() => {
+            Event::WindowEvent { ref event, window_id } if window_id == state.get_window().id() => {
                 match event {
                     WindowEvent::CloseRequested | WindowEvent::KeyboardInput {
                          input: KeyboardInput{
@@ -31,7 +38,7 @@ async fn run() {
                     _ => {}
                 }
             },
-            Event::RedrawRequested(window_id) if window_id == window.id() => {
+            Event::RedrawRequested(window_id) if window_id == state.get_window().id() => {
                 // state.update();
                 // match state.render() {
                 //     Ok(_) => {}
@@ -41,12 +48,18 @@ async fn run() {
                 // }
             },
             Event::MainEventsCleared => {
-                window.request_redraw();
+                state.get_window().request_redraw();
             },
             _ => {}
         });
 }
 
 fn main() {
+    let env = env_logger::Env::default()
+        .filter_or("MY_LOG_LEVEL", "info")
+        .write_style_or("MY_LOG_STYLE", "always");
+
+    env_logger::init_from_env(env);
+
     pollster::block_on(run());
 }
