@@ -1,6 +1,8 @@
 use winit::window::Window;
 use log::info;
 
+use crate::camera;
+
 pub struct RenderState {
 
     surface: wgpu::Surface,
@@ -9,6 +11,9 @@ pub struct RenderState {
     config: wgpu::SurfaceConfiguration,
     size: winit::dpi::PhysicalSize<u32>,
     window: Window,
+
+    render_camera: camera::RenderCamera,
+    // depth_texture: texture::Texture,
 }
 
 impl RenderState {
@@ -70,13 +75,17 @@ impl RenderState {
         // Configures the surface and prepares it for rendering
         surface.configure(&device, &config);
 
+        let render_camera = camera::RenderCamera::new(&device, &config, "main_camera");
+
         RenderState {
             surface,
             device,
             queue,
             config,
             size,
-            window
+            window,
+
+            render_camera,
         }
     }
 
@@ -105,12 +114,18 @@ impl RenderState {
         self.size
     }
 
+    #[inline]
+    pub fn get_render_camera(&self) -> &camera::RenderCamera {
+        &self.render_camera
+    }
+
     pub fn resize(&mut self, new_size: winit::dpi::PhysicalSize<u32>) {
         if new_size.width > 0 && new_size.height > 0 {
             self.size = new_size;
             self.config.width = new_size.width;
             self.config.height = new_size.height;
             self.surface.configure(&self.device, &self.config);
+            self.render_camera.resize(&self.device, &self.config);
         }
     }
 }

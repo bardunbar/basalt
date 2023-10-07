@@ -21,6 +21,8 @@ impl Renderer {
         });
 
         {
+            let render_camera = state.get_render_camera();
+
             let mut _render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                 label: Some("Render Pass"),
                 color_attachments: &[Some(wgpu::RenderPassColorAttachment{
@@ -31,7 +33,11 @@ impl Renderer {
                         store: true,
                     }
                 })],
-                depth_stencil_attachment: None,
+                depth_stencil_attachment: Some(wgpu::RenderPassDepthStencilAttachment {
+                    view: render_camera.get_depth_view(),
+                    depth_ops: Some(wgpu::Operations { load: wgpu::LoadOp::Clear(1.0), store: true }),
+                    stencil_ops: None,
+                }),
             });
         }
 
