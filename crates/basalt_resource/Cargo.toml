@@ -1,15 +1,10 @@
 [package]
-name = "basalt_render"
+name = "basalt_resource"
 version = "0.1.0"
 edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-winit = "0.28.7"
-wgpu = "0.17.1"
-cfg-if = "1.0.0"
-log = "0.4.20"
-basalt_resource = { path = "../basalt_resource" }
-image = "0.24.7"
 anyhow = "1.0.75"
+cfg-if = "1.0.0"
