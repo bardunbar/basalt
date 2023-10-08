@@ -39,6 +39,8 @@ impl Renderer {
                     stencil_ops: None,
                 }),
             });
+
+
         }
 
         state.get_queue().submit(std::iter::once(encoder.finish()));

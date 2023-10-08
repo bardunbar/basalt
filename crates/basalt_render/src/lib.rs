@@ -4,3 +4,4 @@ pub mod renderer;
 
 mod texture;
 mod camera;
+mod model;
