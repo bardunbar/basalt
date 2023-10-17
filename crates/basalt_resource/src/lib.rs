@@ -4,7 +4,9 @@
 
 pub fn load_string(file_name: &str) -> anyhow::Result<String> {
 
-    let path = std::path::Path::new(&std::env::var("OUT_DIR").unwrap())
+    // @todo: Replace this when we get a proper build system
+    let path = std::path::Path::new("")
+    // let path = std::path::Path::new(&std::env::var("OUT_DIR").unwrap())
         .join("assets")
         .join(file_name);
 
@@ -14,7 +16,10 @@ pub fn load_string(file_name: &str) -> anyhow::Result<String> {
 }
 
 pub fn load_binary(file_name: &str) -> anyhow::Result<Vec<u8>> {
-    let path = std::path::Path::new(&std::env::var("OUT_DIR").unwrap())
+
+    // @todo: Replace this when we get a proper build system
+    let path = std::path::Path::new("")
+    // let path = std::path::Path::new(&std::env::var("OUT_DIR").unwrap())
         .join("assets")
         .join(file_name);
 

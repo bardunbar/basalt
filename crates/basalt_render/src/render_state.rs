@@ -1,7 +1,7 @@
 use winit::window::Window;
 use log::info;
 
-use crate::camera;
+use crate::{camera, model};
 
 pub struct RenderState {
 
@@ -13,7 +13,9 @@ pub struct RenderState {
     window: Window,
 
     render_camera: camera::RenderCamera,
-    // depth_texture: texture::Texture,
+
+    // TEMP
+    test_model: model::Model,
 }
 
 impl RenderState {
@@ -77,6 +79,32 @@ impl RenderState {
 
         let render_camera = camera::RenderCamera::new(&device, &config, "main_camera");
 
+        // ***
+        // @TODO: Replace temp model loading code
+        let texture_bind_group_layout = device.create_bind_group_layout(&wgpu::BindGroupLayoutDescriptor {
+            label: Some("texture_bind_group_layout"),
+            entries: &[
+                wgpu::BindGroupLayoutEntry {
+                    binding: 0,
+                    visibility: wgpu::ShaderStages::FRAGMENT,
+                    ty: wgpu::BindingType::Texture {
+                        sample_type: wgpu::TextureSampleType::Float { filterable: true },
+                        view_dimension: wgpu::TextureViewDimension::D2,
+                        multisampled: false
+                    },
+                    count: None,
+                },
+                wgpu::BindGroupLayoutEntry {
+                    binding: 1,
+                    visibility: wgpu::ShaderStages::FRAGMENT,
+                    ty: wgpu::BindingType::Sampler(wgpu::SamplerBindingType::Filtering),
+                    count: None,
+                }
+            ]
+        });
+        let test_model = model::Model::from_string(basalt_resource::load_string("basic_hex.obj").unwrap(), &device, &queue, &texture_bind_group_layout).await.unwrap();
+        // ***
+
         RenderState {
             surface,
             device,
@@ -86,6 +114,8 @@ impl RenderState {
             window,
 
             render_camera,
+
+            test_model,
         }
     }
 
