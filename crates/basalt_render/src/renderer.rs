@@ -1,6 +1,6 @@
 use wgpu::Color;
 
-use crate::render_state::RenderState;
+use crate::{render_state::RenderState, model};
 
 
 pub struct Renderer {
@@ -40,7 +40,10 @@ impl Renderer {
                 }),
             });
 
+            // render_camera.setup_bindings(&mut render_pass);
 
+
+            // model::draw_model(&mut render_pass, &state.test_model);
         }
 
         state.get_queue().submit(std::iter::once(encoder.finish()));

@@ -1,7 +1,32 @@
-use std::io::{Cursor, BufReader};
+use std::{io::{Cursor, BufReader}, ops::Range};
 use wgpu::util::DeviceExt;
 
 use crate::texture;
+
+pub fn draw_mesh<'a>(render_pass: &mut wgpu::RenderPass<'a>, mesh: &'a Mesh, material: &'a Material) {
+    draw_mesh_instanced(render_pass, mesh, material, 0..1);
+}
+
+pub fn draw_mesh_instanced<'a>(render_pass: &mut wgpu::RenderPass<'a>, mesh: &'a Mesh, material: &'a Material, instances: Range<u32>) {
+    render_pass.set_vertex_buffer(0, mesh.vertex_buffer.slice(..));
+    render_pass.set_index_buffer(mesh.index_buffer.slice(..), wgpu::IndexFormat::Uint32);
+
+    render_pass.set_bind_group(0, &material.bind_group, &[]);
+
+    render_pass.draw_indexed(0..mesh.num_elements, 0, instances);
+}
+
+pub fn draw_model<'a>(render_pass: &mut wgpu::RenderPass<'a>, model: &'a Model) {
+    draw_model_instanced(render_pass, model, 0..1);
+}
+
+pub fn draw_model_instanced<'a>(render_pass: &mut wgpu::RenderPass<'a>, model: &'a Model, instances: Range<u32>) {
+
+    for mesh in &model.meshes {
+        let material = &model.materials[mesh.material];
+        draw_mesh_instanced(render_pass, mesh, material, instances.clone());
+    }
+}
 
 
 

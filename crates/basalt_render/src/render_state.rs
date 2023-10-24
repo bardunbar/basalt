@@ -15,7 +15,7 @@ pub struct RenderState {
     render_camera: camera::RenderCamera,
 
     // TEMP
-    test_model: model::Model,
+    pub test_model: model::Model,
 }
 
 impl RenderState {

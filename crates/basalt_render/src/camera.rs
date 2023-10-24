@@ -142,3 +142,9 @@ impl RenderCamera {
         self.depth_texture = texture::Texture::create_depth_texture(device, config, &format!("{} - depth_texture", self.label));
     }
 }
+
+impl<'a> RenderCamera {
+    pub fn setup_bindings(&'a self, render_pass: &mut wgpu::RenderPass<'a>) {
+        render_pass.set_bind_group(1, &self.camera_bind_group, &[]);
+    }
+}

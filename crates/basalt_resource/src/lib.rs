@@ -1,7 +1,4 @@
 
-
-
-
 pub fn load_string(file_name: &str) -> anyhow::Result<String> {
 
     // @todo: Replace this when we get a proper build system
