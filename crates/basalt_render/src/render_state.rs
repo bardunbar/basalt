@@ -1,7 +1,9 @@
+use cgmath::Zero;
+use wgpu::util::DeviceExt;
 use winit::window::Window;
 use log::info;
 
-use crate::{camera, model};
+use crate::{camera, model::{self, Vertex, Instance}, texture};
 
 pub struct RenderState {
 
@@ -16,6 +18,9 @@ pub struct RenderState {
 
     // TEMP
     pub test_model: model::Model,
+    pub default_pipeline: wgpu::RenderPipeline,
+    pub instances: Vec<Instance>,
+    pub instance_buffer: wgpu::Buffer,
 }
 
 impl RenderState {
@@ -105,6 +110,91 @@ impl RenderState {
         let test_model = model::Model::from_string(basalt_resource::load_string("basic_hex.obj").unwrap(), &device, &queue, &texture_bind_group_layout).await.unwrap();
         // ***
 
+
+        // ***
+        // @TODO: Replace temp pipeline code
+
+        let default_pipeline = {
+            let default_pipeline_layout = device.create_pipeline_layout(&wgpu::PipelineLayoutDescriptor {
+                label: Some("default_pipeline_layout"),
+                bind_group_layouts: &[
+                    &texture_bind_group_layout,
+                    render_camera.get_bind_group_layout(),
+                ],
+                push_constant_ranges: &[],
+            });
+
+            let shader_text = basalt_resource::load_string("default.wgsl").unwrap();
+            let shader_descriptor = wgpu::ShaderModuleDescriptor {
+                label: Some("default_shader"),
+                source: wgpu::ShaderSource::Wgsl(shader_text.into()),
+            };
+
+            let shader = device.create_shader_module(shader_descriptor);
+
+            device.create_render_pipeline(&wgpu::RenderPipelineDescriptor {
+                label: Some("default_render_pipeline"),
+                layout: Some(&default_pipeline_layout),
+                vertex: wgpu::VertexState {
+                    module: &shader,
+                    entry_point: "vs_main",
+                    buffers: &[
+                        model::ModelVertex::desc(),
+                        model::InstanceRaw::desc(),
+                    ],
+                },
+                fragment: Some(wgpu::FragmentState {
+                    module: &shader,
+                    entry_point: "fs_main",
+                    targets: &[
+                        Some(wgpu::ColorTargetState {
+                            format: config.format,
+                            blend: Some(wgpu::BlendState::REPLACE),
+                            write_mask: wgpu::ColorWrites::ALL,
+                        })
+                    ],
+                }),
+                primitive: wgpu::PrimitiveState {
+                    topology: wgpu::PrimitiveTopology::TriangleList,
+                    strip_index_format: None,
+                    front_face: wgpu::FrontFace::Ccw,
+                    cull_mode: Some(wgpu::Face::Back),
+                    polygon_mode: wgpu::PolygonMode::Fill,
+                    unclipped_depth: false,
+                    conservative:false,
+                },
+                depth_stencil: Some(wgpu::DepthStencilState{
+                    format: texture::Texture::DEPTH_FORMAT,
+                    depth_write_enabled: true,
+                    depth_compare: wgpu::CompareFunction::Less,
+                    stencil: wgpu::StencilState::default(),
+                    bias: wgpu::DepthBiasState::default(),
+                }),
+                multisample: wgpu::MultisampleState {
+                    count: 1,
+                    mask: !0,
+                    alpha_to_coverage_enabled: false,
+                },
+                multiview: None,
+            })
+        };
+        // ***
+
+        let instances = {
+            let position = cgmath::Vector3{x: 0.0, y: 0.0, z: 0.0};
+            let rotation = cgmath::Quaternion::zero();
+            vec![Instance {position, rotation}]
+        };
+
+        let instance_data = instances.iter().map(Instance::to_raw).collect::<Vec<_>>();
+        let instance_buffer = device.create_buffer_init(
+            &wgpu::util::BufferInitDescriptor {
+                label: Some("instance_buffer"),
+                contents: bytemuck::cast_slice(&instance_data),
+                usage: wgpu::BufferUsages::VERTEX | wgpu::BufferUsages::COPY_DST,
+            }
+        );
+
         RenderState {
             surface,
             device,
@@ -116,6 +206,9 @@ impl RenderState {
             render_camera,
 
             test_model,
+            default_pipeline,
+            instances,
+            instance_buffer,
         }
     }
 
@@ -147,6 +240,11 @@ impl RenderState {
     #[inline]
     pub fn get_render_camera(&self) -> &camera::RenderCamera {
         &self.render_camera
+    }
+
+    #[inline]
+    pub fn get_default_pipeline(&self) -> &wgpu::RenderPipeline {
+        &self.default_pipeline
     }
 
     pub fn resize(&mut self, new_size: winit::dpi::PhysicalSize<u32>) {

@@ -57,6 +57,7 @@ pub struct RenderCamera {
     camera_uniform: CameraUniform,
     camera_buffer: wgpu::Buffer,
     camera_bind_group: wgpu::BindGroup,
+    camera_bind_group_layout: wgpu::BindGroupLayout,
 
     clear_color: wgpu::Color,
     label: String,
@@ -128,6 +129,7 @@ impl RenderCamera {
             camera_uniform,
             camera_buffer,
             camera_bind_group,
+            camera_bind_group_layout,
             clear_color: wgpu::Color { r: 0.3, g: 0.3, b: 0.3, a: 1.0 },
             label: label.to_owned(),
         }
@@ -140,6 +142,11 @@ impl RenderCamera {
 
     pub fn resize(&mut self, device: &wgpu::Device, config: &wgpu::SurfaceConfiguration) {
         self.depth_texture = texture::Texture::create_depth_texture(device, config, &format!("{} - depth_texture", self.label));
+    }
+
+    #[inline]
+    pub fn get_bind_group_layout(&self) -> &wgpu::BindGroupLayout {
+        &self.camera_bind_group_layout
     }
 }
 

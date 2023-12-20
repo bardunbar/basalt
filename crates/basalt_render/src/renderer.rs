@@ -23,7 +23,7 @@ impl Renderer {
         {
             let render_camera = state.get_render_camera();
 
-            let mut _render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
+            let mut render_pass = encoder.begin_render_pass(&wgpu::RenderPassDescriptor {
                 label: Some("Render Pass"),
                 color_attachments: &[Some(wgpu::RenderPassColorAttachment{
                     view: &view,
@@ -40,10 +40,13 @@ impl Renderer {
                 }),
             });
 
-            // render_camera.setup_bindings(&mut render_pass);
+            render_pass.set_vertex_buffer(1, state.instance_buffer.slice(..));
 
+            render_camera.setup_bindings(&mut render_pass);
 
-            // model::draw_model(&mut render_pass, &state.test_model);
+            render_pass.set_pipeline(state.get_default_pipeline());
+
+            model::draw_model(&mut render_pass, &state.test_model);
         }
 
         state.get_queue().submit(std::iter::once(encoder.finish()));
