@@ -46,7 +46,7 @@ impl Renderer {
 
             render_pass.set_pipeline(state.get_default_pipeline());
 
-            model::draw_model(&mut render_pass, &state.test_model);
+            model::draw_model_instanced(&mut render_pass, &state.test_model, 0..state.instances.len() as u32);
         }
 
         state.get_queue().submit(std::iter::once(encoder.finish()));

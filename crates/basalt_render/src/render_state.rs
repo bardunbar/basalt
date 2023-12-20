@@ -181,9 +181,28 @@ impl RenderState {
         // ***
 
         let instances = {
-            let position = cgmath::Vector3{x: 0.0, y: 0.0, z: 0.0};
-            let rotation = cgmath::Quaternion::zero();
-            vec![Instance {position, rotation}]
+            fn get_world_pos(q: i32, r: i32) -> cgmath::Vector3<f32> {
+                const SIZE: f32 = 1.0;
+                let sqrt_3 = f32::sqrt(3.0);
+
+                let x = sqrt_3 * q as f32 + (sqrt_3 * 0.5 * r as f32);
+                let y = 0.0;
+                let z = 1.5 * r as f32;
+                cgmath::Vector3 { x, y, z } * SIZE
+            }
+
+            let positions = vec![
+                (0,0),
+                (1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1), (1, -1),
+                (2, 0), (1, 1), (0, 2), (-1, 2), (-2, 2), (-2, 1), (-2, 0), (-1, -1), (0, -2), (1, -2), (2, -2), (2, -1),
+            ];
+            positions.iter().map(|p| {
+                let mut position = get_world_pos(p.0, p.1);
+                position.y = rand::random();
+
+                let rotation = cgmath::Quaternion::zero();
+                Instance {position, rotation}
+            }).collect::<Vec<_>>()
         };
 
         let instance_data = instances.iter().map(Instance::to_raw).collect::<Vec<_>>();

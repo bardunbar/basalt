@@ -11,7 +11,7 @@ async fn run() {
 
     info!("Basalt Initialization Begin");
     let event_loop = EventLoop::new();
-    let window = WindowBuilder::new().build(&event_loop).unwrap();
+    let window = WindowBuilder::new().with_title("Basalt").build(&event_loop).unwrap();
 
     let mut state = RenderState::new(window).await;
     let renderer = Renderer::new();
