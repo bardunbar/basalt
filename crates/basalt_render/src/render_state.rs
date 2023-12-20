@@ -124,7 +124,7 @@ impl RenderState {
                 push_constant_ranges: &[],
             });
 
-            let shader_text = basalt_resource::load_string("default.wgsl").unwrap();
+            let shader_text = basalt_resource::load_string("default_instanced.wgsl").unwrap();
             let shader_descriptor = wgpu::ShaderModuleDescriptor {
                 label: Some("default_shader"),
                 source: wgpu::ShaderSource::Wgsl(shader_text.into()),
