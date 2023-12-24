@@ -14,7 +14,7 @@ async fn run() {
     let window = WindowBuilder::new().with_title("Basalt").build(&event_loop).unwrap();
 
     let mut state = RenderState::new(window).await;
-    let renderer = Renderer::new();
+    let mut renderer = Renderer::new(state.get_device(), state.get_queue(), state.get_config());
 
     info!("Basalt Loop Begin");
 
@@ -32,9 +32,11 @@ async fn run() {
                     } => *control_flow = ControlFlow::Exit,
                     WindowEvent::Resized(physical_size) => {
                         state.resize(*physical_size);
+                        renderer.resize(state.get_device(), *physical_size);
                     },
                     WindowEvent::ScaleFactorChanged { new_inner_size, .. } => {
                         state.resize(**new_inner_size);
+                        renderer.resize(state.get_device(), **new_inner_size);
                     }
                     _ => {}
                 }

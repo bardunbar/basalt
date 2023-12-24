@@ -7,7 +7,7 @@ edition = "2021"
 
 [dependencies]
 winit = "0.28.7"
-wgpu = "0.17.1"
+wgpu = "0.18.0"
 cfg-if = "1.0.0"
 log = "0.4.20"
 basalt_resource = { path = "../basalt_resource" }
@@ -19,3 +19,4 @@ tobj = { version = "3.2.1", default-features = false, features = [
     "async"
 ]}
 rand = "0.8.5"
+smaa = "0.12.0"

@@ -30,7 +30,11 @@ impl RenderState {
         let size = window.inner_size();
 
         // This is our GPU instance, used to create surfaces and adapters
-        let instance = wgpu::Instance::new(wgpu::InstanceDescriptor { backends: wgpu::Backends::all(), dx12_shader_compiler: Default::default() });
+        let instance = wgpu::Instance::new(wgpu::InstanceDescriptor {
+            backends: wgpu::Backends::all(),
+            dx12_shader_compiler: Default::default(),
+            ..Default::default()
+        });
 
         // Create the platform specific surface to draw to
         let surface = unsafe {
@@ -264,6 +268,11 @@ impl RenderState {
     #[inline]
     pub fn get_default_pipeline(&self) -> &wgpu::RenderPipeline {
         &self.default_pipeline
+    }
+
+    #[inline]
+    pub fn get_config(&self) -> &wgpu::SurfaceConfiguration {
+        &self.config
     }
 
     pub fn resize(&mut self, new_size: winit::dpi::PhysicalSize<u32>) {
