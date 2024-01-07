@@ -179,6 +179,7 @@ impl Vertex for ModelVertex {
 pub struct Instance {
     pub position: cgmath::Vector3<f32>,
     pub rotation: cgmath::Quaternion<f32>,
+    pub color: cgmath::Vector3<f32>,
 }
 
 impl Instance {
@@ -187,6 +188,7 @@ impl Instance {
         InstanceRaw {
             model: model.into(),
             normal: cgmath::Matrix3::from(self.rotation).into(),
+            color: self.color.into(),
         }
     }
 }
@@ -196,6 +198,7 @@ impl Instance {
 pub struct InstanceRaw {
     model: [[f32; 4]; 4],
     normal: [[f32; 3]; 3],
+    color: [f32; 3],
 }
 
 impl InstanceRaw {
@@ -242,6 +245,12 @@ impl InstanceRaw {
                     shader_location: 11,
                     format: wgpu::VertexFormat::Float32x3,
                 },
+
+                wgpu::VertexAttribute {
+                    offset: mem::size_of::<[f32; 25]>() as wgpu::BufferAddress,
+                    shader_location: 12,
+                    format: wgpu::VertexFormat::Float32x3,
+                }
             ]
         }
     }

@@ -205,7 +205,8 @@ impl RenderState {
                 position.y = rand::random();
 
                 let rotation = cgmath::Quaternion::zero();
-                Instance {position, rotation}
+                let color = cgmath::Vector3::new(1.0, 1.0, 1.0);
+                Instance {position, rotation, color}
             }).collect::<Vec<_>>()
         };
 
