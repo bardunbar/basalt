@@ -1,4 +1,5 @@
 use cgmath::Zero;
+use hex::HexAxial;
 use wgpu::util::DeviceExt;
 use winit::window::Window;
 use log::info;
@@ -185,27 +186,20 @@ impl RenderState {
         // ***
 
         let instances = {
-            fn get_world_pos(q: i32, r: i32) -> cgmath::Vector3<f32> {
-                const SIZE: f32 = 1.0;
-                let sqrt_3 = f32::sqrt(3.0);
-
-                let x = sqrt_3 * q as f32 + (sqrt_3 * 0.5 * r as f32);
-                let y = 0.0;
-                let z = 1.5 * r as f32;
-                cgmath::Vector3 { x, y, z } * SIZE
-            }
+            const SIZE: f32 = 1.0;
 
             let positions = vec![
-                (0,0),
+                (0, 0),
                 (1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1), (1, -1),
                 (2, 0), (1, 1), (0, 2), (-1, 2), (-2, 2), (-2, 1), (-2, 0), (-1, -1), (0, -2), (1, -2), (2, -2), (2, -1),
             ];
-            positions.iter().map(|p| {
-                let mut position = get_world_pos(p.0, p.1);
-                position.y = rand::random();
+            let hex_positions = positions.iter().map(|p| HexAxial::new(p.0, p.1) ).collect::<Vec<_>>();
 
+            hex_positions.iter().map(|p| {
+                let hex_position = p.to_cartesian();
+                let position = cgmath::Vector3 { x: hex_position.0 * SIZE, y: rand::random(), z: hex_position.1 * SIZE };
                 let rotation = cgmath::Quaternion::zero();
-                let color = cgmath::Vector3::new(0.1, 0.2, 1.0);
+                let color = cgmath::Vector3::new(0.0, 0.2, 0.1);
                 Instance {position, rotation, color}
             }).collect::<Vec<_>>()
         };

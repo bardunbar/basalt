@@ -11,6 +11,7 @@ wgpu = "0.18.0"
 cfg-if = "1.0.0"
 log = "0.4.20"
 basalt_resource = { path = "../basalt_resource" }
+hex = { path = "../hex" }
 image = "0.24.7"
 anyhow = "1.0.75"
 cgmath = "0.18.0"
