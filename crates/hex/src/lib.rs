@@ -1,51 +1,68 @@
-use std::ops;
+// use std::ops;
 
-const SQRT_3: f32 = 1.73205080757;
-const HALF_SQRT_3: f32 = SQRT_3 / 2.0;
+pub mod hexagon;
 
-pub struct HexAxial {
-    q: i32,
-    r: i32,
-}
+// const SQRT_3: f32 = 1.73205080757;
+// const HALF_SQRT_3: f32 = SQRT_3 / 2.0;
 
-impl HexAxial {
-    pub fn new(q: i32, r: i32) -> Self {
-        HexAxial { q, r }
-    }
+// pub struct HexAxial {
+//     q: i32,
+//     r: i32,
+// }
 
-    pub fn to_cube(&self) -> HexCube {
-        HexCube { q: self.q, r: self.r, s: -self.q - self.r }
-    }
+// impl HexAxial {
+//     pub fn new(q: i32, r: i32) -> Self {
+//         HexAxial { q, r }
+//     }
 
-    pub fn to_cartesian(&self) -> (f32, f32) {
-        (SQRT_3 * self.q as f32 + HALF_SQRT_3 * self.r as f32, 1.5 * self.r as f32)
-    }
-}
+//     pub fn to_cube(&self) -> HexCube {
+//         HexCube { q: self.q, r: self.r, s: -self.q - self.r }
+//     }
 
-impl ops::Add for HexAxial {
-    type Output = HexAxial;
+//     pub fn to_cartesian(&self) -> (f32, f32) {
+//         (SQRT_3 * self.q as f32 + HALF_SQRT_3 * self.r as f32, 1.5 * self.r as f32)
+//     }
+// }
 
-    fn add(self, rhs: Self) -> Self::Output {
-        HexAxial { q: self.q + rhs.q, r: self.r + rhs.r }
-    }
-}
+// impl ops::Add for HexAxial {
+//     type Output = HexAxial;
 
-impl ops::AddAssign for HexAxial {
-    fn add_assign(&mut self, rhs: Self) {
-        self.q += rhs.q;
-        self.r += rhs.r;
-    }
-}
+//     fn add(self, rhs: Self) -> Self::Output {
+//         HexAxial { q: self.q + rhs.q, r: self.r + rhs.r }
+//     }
+// }
+
+// impl ops::AddAssign for HexAxial {
+//     fn add_assign(&mut self, rhs: Self) {
+//         self.q += rhs.q;
+//         self.r += rhs.r;
+//     }
+// }
+
+// impl ops::Mul<i32> for HexAxial {
+//     type Output = HexAxial;
+
+//     fn mul(self, rhs: i32) -> Self::Output {
+//         HexAxial { q: self.q * rhs, r: self.r * rhs }
+//     }
+// }
+
+// impl ops::MulAssign<i32> for HexAxial {
+//     fn mul_assign(&mut self, rhs: i32) {
+//         self.q *= rhs;
+//         self.r *= rhs;
+//     }
+// }
 
 
-pub struct HexCube {
-    q: i32,
-    r: i32,
-    s: i32,
-}
+// pub struct HexCube {
+//     q: i32,
+//     r: i32,
+//     s: i32,
+// }
 
-impl HexCube {
-    pub fn to_axial(&self) -> HexAxial {
-        HexAxial { q: self.q, r: self.r }
-    }
-}
+// impl HexCube {
+//     pub fn to_axial(&self) -> HexAxial {
+//         HexAxial { q: self.q, r: self.r }
+//     }
+// }

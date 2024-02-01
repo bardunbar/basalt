@@ -1,5 +1,5 @@
 use cgmath::Zero;
-use hex::HexAxial;
+use hex::hexagon::Axial;
 use wgpu::util::DeviceExt;
 use winit::window::Window;
 use log::info;
@@ -193,7 +193,7 @@ impl RenderState {
                 (1, 0), (0, 1), (-1, 1), (-1, 0), (0, -1), (1, -1),
                 (2, 0), (1, 1), (0, 2), (-1, 2), (-2, 2), (-2, 1), (-2, 0), (-1, -1), (0, -2), (1, -2), (2, -2), (2, -1),
             ];
-            let hex_positions = positions.iter().map(|p| HexAxial::new(p.0, p.1) ).collect::<Vec<_>>();
+            let hex_positions = positions.iter().map(|p| Axial::new(p.0, p.1) ).collect::<Vec<_>>();
 
             hex_positions.iter().map(|p| {
                 let hex_position = p.to_cartesian();
